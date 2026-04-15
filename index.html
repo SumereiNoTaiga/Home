@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>十二の会 | Juninokai</title>
+  <style>
+    :root {
+      --bg-1: #060b16;
+      --bg-2: #0b1530;
+      --bg-3: #10224a;
+      --line: rgba(180, 205, 255, 0.16);
+      --line-strong: rgba(180, 205, 255, 0.32);
+      --text: #eef4ff;
+      --muted: #9eb4da;
+      --glow: rgba(113, 162, 255, 0.28);
+      --glow-soft: rgba(180, 205, 255, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at 50% 50%, rgba(41, 90, 180, 0.18), transparent 22%),
+        radial-gradient(circle at 20% 20%, rgba(74, 120, 220, 0.08), transparent 28%),
+        radial-gradient(circle at 80% 80%, rgba(130, 160, 255, 0.06), transparent 30%),
+        linear-gradient(180deg, var(--bg-1) 0%, var(--bg-2) 52%, var(--bg-3) 100%);
+      color: var(--text);
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+      background-size: 56px 56px;
+      mask-image: radial-gradient(circle at center, black 38%, transparent 90%);
+      opacity: 0.45;
+    }
+
+    main {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: grid;
+      place-items: center;
+      isolation: isolate;
+    }
+
+    .stars,
+    .stars::before,
+    .stars::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-repeat: repeat;
+      background-image:
+        radial-gradient(circle, rgba(255,255,255,0.55) 0.8px, transparent 1px);
+      background-size: 180px 180px;
+      opacity: 0.22;
+      animation: drift 22s linear infinite;
+      pointer-events: none;
+    }
+
+    .stars::before {
+      background-size: 240px 240px;
+      opacity: 0.12;
+      animation-duration: 34s;
+      transform: scale(1.05);
+    }
+
+    .stars::after {
+      background-size: 320px 320px;
+      opacity: 0.08;
+      animation-duration: 46s;
+      transform: scale(1.08);
+    }
+
+    .centerpiece {
+      position: relative;
+      width: min(90vw, 760px);
+      aspect-ratio: 1 / 1;
+      display: grid;
+      place-items: center;
+    }
+
+    .ring,
+    .ring::before,
+    .ring::after {
+      position: absolute;
+      border-radius: 50%;
+      border: 1px solid var(--line);
+      content: "";
+    }
+
+    .ring {
+      width: min(74vw, 520px);
+      height: min(74vw, 520px);
+      box-shadow: 0 0 60px var(--glow-soft), inset 0 0 40px rgba(255,255,255,0.02);
+      animation: slowRotate 28s linear infinite;
+    }
+
+    .ring::before {
+      inset: 24px;
+      border-color: rgba(180, 205, 255, 0.22);
+      animation: pulse 6s ease-in-out infinite;
+    }
+
+    .ring::after {
+      inset: 58px;
+      border-color: rgba(180, 205, 255, 0.14);
+    }
+
+    .orbit {
+      position: absolute;
+      width: min(74vw, 520px);
+      height: min(74vw, 520px);
+      animation: slowRotateReverse 18s linear infinite;
+    }
+
+    .dot {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(215, 230, 255, 0.95);
+      box-shadow: 0 0 18px var(--glow), 0 0 36px var(--glow);
+    }
+
+    .dot:nth-child(1) { top: -5px; left: 50%; transform: translateX(-50%); }
+    .dot:nth-child(2) { right: -5px; top: 50%; transform: translateY(-50%); }
+    .dot:nth-child(3) { bottom: -5px; left: 50%; transform: translateX(-50%); }
+    .dot:nth-child(4) { left: -5px; top: 50%; transform: translateY(-50%); }
+
+    .content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      padding: 2rem;
+      animation: float 5.5s ease-in-out infinite;
+    }
+
+    .kanji {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(3.2rem, 8vw, 6.8rem);
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-shadow: 0 0 26px rgba(140, 180, 255, 0.12);
+    }
+
+    .romanized {
+      margin-top: 0.9rem;
+      font-size: clamp(0.95rem, 2vw, 1.2rem);
+      letter-spacing: 0.42em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .tagline {
+      margin-top: 1.2rem;
+      font-size: 0.95rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(210, 225, 255, 0.62);
+    }
+
+    .center-glow {
+      position: absolute;
+      width: min(44vw, 280px);
+      height: min(44vw, 280px);
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(110, 150, 255, 0.18), rgba(110, 150, 255, 0.05) 42%, transparent 72%);
+      filter: blur(10px);
+      z-index: 1;
+      animation: breathe 7s ease-in-out infinite;
+    }
+
+    @keyframes slowRotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes slowRotateReverse {
+      from { transform: rotate(360deg); }
+      to { transform: rotate(0deg); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.55; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.015); }
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-8px); }
+    }
+
+    @keyframes breathe {
+      0%, 100% { transform: scale(0.98); opacity: 0.72; }
+      50% { transform: scale(1.05); opacity: 1; }
+    }
+
+    @keyframes drift {
+      from { transform: translateY(0px); }
+      to { transform: translateY(18px); }
+    }
+
+    @media (max-width: 640px) {
+      .centerpiece {
+        width: 96vw;
+      }
+
+      .content {
+        padding: 1rem;
+      }
+
+      .romanized,
+      .tagline {
+        letter-spacing: 0.24em;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="stars"></div>
+
+    <section class="centerpiece" aria-label="Juninokai landing page">
+      <div class="center-glow"></div>
+      <div class="ring"></div>
+
+      <div class="orbit" aria-hidden="true">
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+      </div>
+
+      <div class="content">
+        <h1 class="kanji">十二の会</h1>
+        <div class="romanized">Juninokai</div>
+        <div class="tagline">The Society of Twelve</div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
